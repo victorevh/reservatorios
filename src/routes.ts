@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import ProductRouter from '@modules/Product/Router';
+import DatabaseRouter from '@modules/Product/Router';
 class Routes {
     static define(router: Router): Router {
-        router.use('/products', ProductRouter);
+        router.use('/database', DatabaseRouter);
 
         return router;
     }
