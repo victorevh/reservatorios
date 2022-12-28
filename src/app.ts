@@ -3,7 +3,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { Server } from 'http';
 import router from './routes';
-
 export class SetupApplication {
   private server?: Server;
 
