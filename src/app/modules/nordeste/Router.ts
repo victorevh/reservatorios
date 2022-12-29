@@ -1,12 +1,9 @@
-import { Router, request, response, Request, Response } from "express";
-import { EARmetricsType } from "@src/services/type";
+import { Router, Request, Response } from "express";
 
 const router = Router();
 const axios = require("axios");
 
 router.get("/", (req: Request, res: Response) => {
-  const axios = require("axios");
-
   (async () => {
     try {
       const response = await axios.get(

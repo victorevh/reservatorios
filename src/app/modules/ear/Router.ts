@@ -1,12 +1,11 @@
-import { Router, request, response, Request, Response } from "express";
+import { Router, Request, Response } from "express";
 import { EARmetricsType } from "@src/services/type";
+import { format } from "date-fns";
 
 const router = Router();
 const axios = require("axios");
 
 router.get("/", (req: Request, res: Response) => {
-  const axios = require("axios");
-
   (async () => {
     try {
       const response = await axios.get(
@@ -16,21 +15,27 @@ router.get("/", (req: Request, res: Response) => {
 
       const EARNorteData = resData[0].SubsistemaValorUtil;
       const EARNortestringify = JSON.stringify(EARNorteData);
-      const EARNorte = EARNortestringify.slice(0,5)
-      
+      const EARNorte = EARNortestringify.slice(0, 5);
+
       const EARNordesteData = resData[3].SubsistemaValorUtil;
       const EARNordestestringify = JSON.stringify(EARNordesteData);
-      const EARNordeste = EARNordestestringify.slice(0,5)
+      const EARNordeste = EARNordestestringify.slice(0, 5);
 
       const EARSulData = resData[7].SubsistemaValorUtil;
       const EARSulstringify = JSON.stringify(EARSulData);
-      const EARSul = EARSulstringify.slice(0,5)
+      const EARSul = EARSulstringify.slice(0, 5);
 
       const EARSudesteCentroOesteData = resData[19].SubsistemaValorUtil;
-      const EARSudesteCentroOestestringify = JSON.stringify(EARSudesteCentroOesteData);
-      const EARSudesteCentroOeste= EARSudesteCentroOestestringify.slice(0,5)
+      const EARSudesteCentroOestestringify = JSON.stringify(
+        EARSudesteCentroOesteData
+      );
+      const EARSudesteCentroOeste = EARSudesteCentroOestestringify.slice(0, 5);
+
+      const date = new Date();
+      const mouthDate = `${format(date, "MMMM, yyyy")}`;
 
       const metricsEAR: EARmetricsType = {
+        "Data": mouthDate,
         "Sudeste / Centro-Oeste": EARSudesteCentroOeste,
         "Sul": EARSul,
         "Nordeste": EARNordeste,
