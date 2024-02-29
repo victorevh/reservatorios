@@ -1,7 +1,7 @@
 import * as functions from "firebase-functions";
 import { updateStaticReservations } from "./functions/updateReservations";
 
-export const getReservationRun = functions
+export const getReservation = functions
   .runWith({
     timeoutSeconds: 540,
     memory: "2GB",
