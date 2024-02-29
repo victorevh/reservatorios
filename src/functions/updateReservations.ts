@@ -1,32 +1,54 @@
-import axios from 'axios';
+import axios from "axios";
+import { Reservation, ReservationsData } from "../services/types";
+import { db } from "../server/provider";
+import { updateIfNotExist } from "../services/firebase";
 
 export const updateStaticReservations = async () => {
-  const url = 'http://tr.ons.org.br/Content/Get/SituacaoDosReservatorios';
+  const url = "http://tr.ons.org.br/Content/Get/SituacaoDosReservatorios";
 
   try {
     const response = await axios.get(url);
     const data = response.data;
 
-    // Filtrar dados por subsistema
-    const subsistemas = ['Norte', 'Nordeste']; // Adicione outros subsistemas conforme necessário
+    const subsystemMap: { [key: string]: string } = {
+      Norte: "North",
+      Nordeste: "NorthEast",
+      Sul: "South",
+      "Sudeste / Centro-Oeste": "SoutheastMidwest",
+    };
 
-    for (const subsistema of subsistemas) {
-      const filteredData = data.filter((item: any) => item.Subsistema === subsistema);
+    const subsystemData: ReservationsData = {
+      North: [],
+      NorthEast: [],
+      South: [],
+      SoutheastMidwest: [],
+    };
 
-      // Mapear dados para o formato desejado
-      const mappedData = filteredData.map((item: any) => ({
-        Data: item.Data,
-        Reservatorio: item.Reservatorio,
-        ReservatorioEARVerificadaMWMes: item.ReservatorioEARVerificadaMWMes,
-        Bacia: item.Bacia,
-        // Adicione outros campos conforme necessário
-      }));
+    data.forEach((item: Reservation) => {
+      const subsystemEnglish = subsystemMap[item.Subsistema] || "Unknown";
 
-      return mappedData;
+      if (subsystemEnglish !== "Unknown") {
+        subsystemData[subsystemEnglish as keyof ReservationsData].push(item);
+      } else {
+        console.warn(
+          `Subsistema desconhecido ou não mapeado: ${item.Subsistema}`
+        );
+      }
+    });
+
+    for (const item of data) {
+      const regionEnglish = subsystemMap[item.Subsistema] || "Unknown";
+      if (regionEnglish !== "Unknown") {
+        await updateIfNotExist(db, regionEnglish, item);
+      } else {
+        console.warn(
+          `Subsistema desconhecido ou não mapeado: ${item.Subsistema}`
+        );
+      }
     }
 
-    console.log('Dados atualizados com sucesso!');
+    return;
   } catch (error: any) {
-    console.error('Erro ao atualizar dados:', error.message);
+    console.error("Erro ao atualizar dados:", error.message);
   }
 };
