@@ -14,3 +14,5 @@ serviceAccountKey.json
 # Debug.log
 firebase-debug.log
 ui-debug.log
+
+.env
