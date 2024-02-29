@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Reservation, ReservationsData } from "../services/types";
 import { db } from "../server/provider";
-import { updateIfNotExist } from "../services/firebase";
+import { sendData } from "../services/firebase";
 
 export const updateStaticReservations = async () => {
   const url = "http://tr.ons.org.br/Content/Get/SituacaoDosReservatorios";
@@ -39,7 +39,7 @@ export const updateStaticReservations = async () => {
     for (const item of data) {
       const regionEnglish = subsystemMap[item.Subsistema] || "Unknown";
       if (regionEnglish !== "Unknown") {
-        await updateIfNotExist(db, regionEnglish, item);
+        await sendData(db, regionEnglish, item);
       } else {
         console.warn(
           `Subsistema desconhecido ou não mapeado: ${item.Subsistema}`

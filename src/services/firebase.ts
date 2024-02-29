@@ -8,11 +8,11 @@ export const generateDocId = (item: Reservation, region: string): string => {
   return `${region.toLowerCase()}-${idPart}`;
 };
 
-export async function updateIfNotExist(
+export const sendData = async (
   db: any,
   region: string,
   item: Reservation
-): Promise<void> {
+): Promise<void> => {
   const docId = generateDocId(item, region);
   const docRef = doc(db, `reservations/${region.toLowerCase()}/${date}`, docId);
 
@@ -27,4 +27,4 @@ export async function updateIfNotExist(
       `Dados já existem para ${item.Data} na região ${region} com ID ${docId}, pulando a inserção.`
     );
   }
-}
+};
