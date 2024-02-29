@@ -1,20 +1,24 @@
-
-import { initializeApp } from "firebase/app";
-import * as functions from 'firebase-functions'
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-const config = functions.config() || {}
-// Troca \\n por \n
-config.reservatorios.private_key =
-  config.reservatorios.private_key.replace(/\\n/g, "\n");
+import * as functions from "firebase-functions";
 
+const configKey =
+  process.env.NODE_ENV !== "production"
+    ? {
+        privateKey: process.env.PRIVATE_KEY?.replace(/\\n/g, "\n"),
+        clientEmail: process.env.CLIENT_EMAIL,
+        projectId: process.env.PROJECT_ID,
+      }
+    : {
+        privateKey: functions
+          .config()
+          .reservatorios.private_key.replace(/\\n/g, "\n"),
+        clientEmail: functions.config().reservatorios.client_email,
+        projectId: functions.config().reservatorios.project_id,
+      };
 
-var configKey = {
-    privateKey: config.reservatorios.private_key,
-    clientEmail: config.reservatorios.client_email,
-    projectId:  config.reservatorios.project_id,
-  };
-
-const reservations = initializeApp(configKey);
+const reservations =
+  getApps().length === 0 ? initializeApp(configKey) : getApp();
 
 export const reservationsApp = reservations;
 export const db = getFirestore(reservationsApp);
