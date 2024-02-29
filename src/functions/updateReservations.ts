@@ -36,10 +36,12 @@ export const updateStaticReservations = async () => {
       }
     });
 
+    const date = subsystemData.North[0].Data;
+    
     for (const item of data) {
       const regionEnglish = subsystemMap[item.Subsistema] || "Unknown";
       if (regionEnglish !== "Unknown") {
-        await sendData(db, regionEnglish, item);
+        await sendData(db, regionEnglish, item, date);
       } else {
         console.warn(
           `Subsistema desconhecido ou não mapeado: ${item.Subsistema}`
